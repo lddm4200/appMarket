@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
     gap: 12,
     marginBottom: 32,
   },
- statCard: {
+  statCard: {
     flex: 1,
     backgroundColor: COLORS.card,
     borderRadius: 20,
@@ -343,6 +343,10 @@ const styles = StyleSheet.create({
     color: COLORS.primary,
     fontSize: 16,
     fontWeight: "bold",
+  },
+  link: {
+    paddingTop: 20,
+    fontSize: 20,
   },
 });
 export default styles;

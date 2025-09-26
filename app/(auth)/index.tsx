@@ -83,6 +83,7 @@ export default function Login() {
                 <TouchableOpacity
                   onPress={() => setShowPassword(!showPassword)}
                   style={styles.eyeIcon}
+                  activeOpacity={0.8}
                 >
                   <Ionicons
                     name={showPassword ? "eye-outline" : "eye-off-outline"}

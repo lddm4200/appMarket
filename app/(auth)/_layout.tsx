@@ -19,12 +19,11 @@ export default function AuthLayout() {
   useEffect(() => {
     checkAuth();
   }, []);
-  
+
   useEffect(() => {
     const inAuthScreen = segments[0] === "(auth)";
     const isSignedIn = user && token;
-    if (!isSignedIn && !inAuthScreen) return router.replace("/(auth)");
-    else if (isSignedIn && inAuthScreen) return router.replace("/(tabs)");
+    if (isSignedIn && inAuthScreen) return router.replace("/(tabs)");
   }, [user, token, segments]);
   return <Stack screenOptions={{ headerShown: false }} />;
 }

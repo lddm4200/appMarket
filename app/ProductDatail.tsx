@@ -6,7 +6,7 @@ import {
   ScrollView,
   FlatList,
 } from "react-native";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { ImageBackground } from "expo-image";
 import styles from "@/assets/styles/productDetail.styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -16,8 +16,16 @@ import { formatPublishDate } from "@/lib/utils";
 
 export default function ProductDetail() {
   const { item } = useLocalSearchParams();
-
   const router = useRouter();
+  const handelSumit = () => {
+    router.push({
+      pathname: "/modal",
+      params: {
+        product: product,
+      },
+    });
+  };
+
   // Nếu truyền item là object, cần parse lại
   const product = item ? JSON.parse(item as string) : null;
 
@@ -79,6 +87,9 @@ export default function ProductDetail() {
             </TouchableOpacity>
           </View>
           <Text style={styles.recipeTitle}>{product.caption}</Text>
+          <TouchableOpacity onPress={handelSumit}>
+            <Text>ok</Text>
+          </TouchableOpacity>
         </View>
       </ScrollView>
     </View>

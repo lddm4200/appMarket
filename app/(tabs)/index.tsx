@@ -46,28 +46,23 @@ export default function Home() {
       if (!response.ok)
         throw new Error(data.message || "Failed to fetch product");
 
-      // todo fix it later
-      // setProduct((prevproduct) => [...prevproduct, ...data.product]);
-
-      // const uniqueproduct = refresh || pageNum === 1? data.product: Array.from(new Set([...product, ...data.product].map((book) => book._id))).map((id) =>
-      //         [...product, ...data.product].find((book) => book._id === id)
-      //       );
-
       const uniqueproduct =
         refresh || pageNum === 1
-          ? data.product
+          ? data.products
           : Array.from(
-              new Set([...product, ...data.product].map((book) => book._id))
+              new Set(
+                [...product, ...data.products].map((product) => product._id)
+              )
             ).map((id) =>
-              [...product, ...data.product].find((book) => book._id === id)
+              [...product, ...data.products].find(
+                (product) => product._id === id
+              )
             );
 
-      console.log(uniqueproduct);
+      // console.log("dataproduct", uniqueproduct);
+      setProduct(uniqueproduct);
 
-      // setProduct(uniqueproduct);
-      setProduct(data.products);
-
-      setHasMore(pageNum < data.totalPages);
+      setHasMore(pageNum < data.totalPage);
       setPage(pageNum);
     } catch (error) {
       console.log("Error fetching product", error);
@@ -97,7 +92,7 @@ export default function Home() {
   };
 
   const renderItem = ({ item }: any) => (
-    <TouchableOpacity onPress={()=>handleDetai(item)} style={styles.bookCard}>
+    <TouchableOpacity onPress={() => handleDetai(item)} style={styles.bookCard}>
       <View style={styles.bookHeader}>
         <View style={styles.userInfo}>
           <Image
@@ -127,22 +122,6 @@ export default function Home() {
     </TouchableOpacity>
   );
 
-  const renderRatingStars = (rating: any) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <Ionicons
-          key={i}
-          name={i <= rating ? "star" : "star-outline"}
-          size={16}
-          color={i <= rating ? "#f4b400" : COLORS.textSecondary}
-          style={{ marginRight: 2 }}
-        />
-      );
-    }
-    return stars;
-  };
-
   if (loading) return <Loader />;
 
   return (
@@ -165,23 +144,19 @@ export default function Home() {
         onEndReachedThreshold={0.1}
         ListHeaderComponent={
           <View style={styles.header}>
-            <Text style={styles.headerTitle}>Sản Phẩm</Text>
+            <Text style={styles.headerTitle}>Nâu Nâu Shop</Text>
             <Text style={styles.headerSubtitle}>Chúc bạn ngày mới vui vẻ</Text>
           </View>
         }
-        ListFooterComponent={
+       ListFooterComponent={
           hasMore && product.length > 0 ? (
-            <ActivityIndicator
-              style={styles.footerLoader}
-              size="small"
-              color={COLORS.primary}
-            />
+            <ActivityIndicator style={styles.footerLoader} size="small" color={COLORS.primary} />
           ) : null
         }
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons
-              name="arrow-up-left-box-outline"
+              name="cube-outline"
               size={60}
               color={COLORS.textSecondary}
             />

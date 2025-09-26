@@ -26,7 +26,7 @@ export default function Create() {
   const [caption, setCaption] = useState("");
   const [rating, setRating] = useState(3);
   const [image, setImage] = useState(""); // to display the selected image
-  const [imageBase64, setImageBase64] = useState("");
+  const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [price, setPrice] = useState("");
 
@@ -69,9 +69,8 @@ export default function Create() {
           setImageBase64(result.assets[0].base64);
         } else {
           // otherwise, convert to base64
-          const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri)
-
-          setImageBase64(base64);
+          // const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri)
+          // setImageBase64(base64);
         }
       }
     } catch (error) {
@@ -89,12 +88,16 @@ export default function Create() {
     try {
       setLoading(true);
 
-      // get file extension from URI or default to jpeg
       const uriParts = image.split(".");
       const fileType = uriParts[uriParts.length - 1];
-      const imageType = fileType
-        ? `image/${fileType.toLowerCase()}`
-        : "image/jpeg";
+
+
+      const imageType =
+        fileType?.toLowerCase() === "jpg"
+          ? "image/jpeg"
+          : fileType?.toLowerCase() === "png"
+          ? "image/png"
+          : "image/jpeg";
 
       const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
 
@@ -108,11 +111,10 @@ export default function Create() {
           title,
           caption,
           price: Number(price),
-          image: "https://deviet.vn/wp-content/uploads/2019/04/vuong-quoc-anh.jpg",
-          rating: 1
+          image: imageDataUrl,
+          rating: 1,
         }),
       });
-
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Something went wrong");
 
@@ -121,7 +123,7 @@ export default function Create() {
       setCaption("");
       setRating(3);
       setImage("");
-      setImageBase64("");
+      setImageBase64(null);
       router.push("/");
     } catch (error: any) {
       console.error("Error creating post:", error);
@@ -132,7 +134,6 @@ export default function Create() {
   };
 
   const handleChange = (text: any) => {
-    // Chỉ cho phép số và các ký tự liên quan đến giá
     const numericValue = text.replace(/[^0-9.,]/g, "");
     setPrice(numericValue);
   };
@@ -156,7 +157,7 @@ export default function Create() {
               <Text style={styles.label}>Tên sản phẩm</Text>
               <View style={styles.inputContainer}>
                 <Ionicons
-                  name="book-outline"
+                  name="cube-outline"
                   size={20}
                   color={COLORS.textSecondary}
                   style={styles.inputIcon}

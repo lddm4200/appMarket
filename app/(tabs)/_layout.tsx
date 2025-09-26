@@ -1,15 +1,27 @@
 import { View, Text } from "react-native";
 import React from "react";
-import { NativeTabs, Icon, Label, Badge } from "expo-router/unstable-native-tabs";
+import {
+  NativeTabs,
+  Icon,
+  Label,
+  Badge,
+} from "expo-router/unstable-native-tabs";
 import { Ionicons } from "@expo/vector-icons";
-import { Stack, Tabs } from "expo-router";
+import { Stack, Tabs, useRouter, useSegments } from "expo-router";
 import COLORS from "@/constants/colors";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
+import { useAuthStore } from "@/store/authStore";
 
 export default function TabLayout() {
-    const insets = useSafeAreaInsets();
+  const insets = useSafeAreaInsets();
+  const { checkAuth, user, token }: any = useAuthStore();
+  const segments = useSegments();
+  const router = useRouter();
+  const inAuthScreen = segments[0] === "(auth)";
+  const isSignedIn = user && token;
+  if (!isSignedIn && !inAuthScreen) return router.replace("/(auth)");
   return (
-<Tabs
+    <Tabs
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: COLORS.primary,

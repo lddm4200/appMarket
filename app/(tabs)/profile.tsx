@@ -25,8 +25,6 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteBookId, setDeleteBookId] = useState(null);
-
-  console.log(books);
   
 
   const { token }: any = useAuthStore();
@@ -42,9 +40,9 @@ export default function Profile() {
       });
 
       const data = await response.json();
-      if (!response.ok)
-        throw new Error(data.message || "Failed to fetch user books");
-
+      if (!response.ok) throw new Error(data.message || "Failed to fetch user books");
+      console.log(data);
+      
       setBooks(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -114,7 +112,7 @@ export default function Profile() {
 
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => confirmDelete(item._id)}
+        onPress={() => handleDeleteBook(item._id)}
       >
         {deleteBookId === item._id ? (
           <ActivityIndicator size="small" color={COLORS.primary} />
@@ -124,22 +122,6 @@ export default function Profile() {
       </TouchableOpacity>
     </View>
   );
-
-  // const renderRatingStars = (rating) => {
-  //   const stars = [];
-  //   for (let i = 1; i <= 5; i++) {
-  //     stars.push(
-  //       <Ionicons
-  //         key={i}
-  //         name={i <= rating ? "star" : "star-outline"}
-  //         size={14}
-  //         color={i <= rating ? "#f4b400" : COLORS.textSecondary}
-  //         style={{ marginRight: 2 }}
-  //       />
-  //     );
-  //   }
-  //   return stars;
-  // };
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -177,7 +159,7 @@ export default function Profile() {
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
             <Ionicons
-              name="arrow-up-left-box-outline"
+              name="cube-outline"
               size={50}
               color={COLORS.textSecondary}
             />

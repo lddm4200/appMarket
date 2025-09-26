@@ -10,6 +10,7 @@ export default function RootLayout() {
           <Stack.Screen name="(auth)" />
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="ProductDatail" />
+          <Stack.Screen name="modal" options={{ presentation: 'modal',  sheetAllowedDetents: [0.3, 1], }} />
         </Stack>
       </SafeScreen>
     </SafeAreaProvider>

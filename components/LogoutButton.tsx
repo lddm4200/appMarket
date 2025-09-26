@@ -7,15 +7,23 @@ import { useRouter } from "expo-router";
 
 export default function LogoutButton() {
   const { logout }: any = useAuthStore();
-  const router = useRouter()
+  const router = useRouter();
 
+  const handelSumit = () => {
+    router.push({
+      pathname: "/modal",
+      params: {
+        product: "",
+        onclick: logout(),
+        type: "logout",
+        title:"Đăng Xuất",
+        content: "Bạn muốn đăng xuất không?"
+      },
+    });
+  };
   const confirmLogout = () => {
-    // Alert.alert("Logout", "Are you sure you want to logout?", [
-    //   { text: "Cancel", style: "cancel" },
-    //   { text: "Logout", onPress: () => logout(), style: "destructive" },
-    // ]);
+
     logout();
-    // router.push('/(auth)')
   };
 
   return (
