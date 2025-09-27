@@ -59,10 +59,10 @@ export default function Home() {
               )
             );
 
-      // console.log("dataproduct", uniqueproduct);
+      console.log("dataproduct", data);
       setProduct(uniqueproduct);
 
-      setHasMore(pageNum < data.totalPage);
+      setHasMore(pageNum < data.totalPages);
       setPage(pageNum);
     } catch (error) {
       console.log("Error fetching product", error);

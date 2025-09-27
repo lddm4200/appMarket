@@ -21,10 +21,10 @@ import Loader from "@/components/Loader";
 import { sleep } from ".";
 
 export default function Profile() {
-  const [books, setBooks] = useState([]);
+  const [products, setproducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [deleteBookId, setDeleteBookId] = useState(null);
+  const [deleteproductId, setDeleteproductId] = useState(null);
   
 
   const { token }: any = useAuthStore();
@@ -40,10 +40,10 @@ export default function Profile() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to fetch user books");
+      if (!response.ok) throw new Error(data.message || "Failed to fetch user ");
       console.log(data);
       
-      setBooks(data);
+      setproducts(data);
     } catch (error) {
       console.error("Error fetching data:", error);
       Alert.alert(
@@ -59,29 +59,29 @@ export default function Profile() {
     fetchData();
   }, []);
 
-  const handleDeleteBook = async (bookId: any) => {
+  const handleDeleteProduct = async (productId: any) => {
     try {
-      setDeleteBookId(bookId);
+      setDeleteproductId(productId);
 
-      const response = await fetch(`${API_URL}/product/${bookId}`, {
+      const response = await fetch(`${API_URL}/product/${productId}`, {
         method: "DELETE",
         headers: { Authorization: `Bearer ${token}` },
       });
 
       const data = await response.json();
       if (!response.ok)
-        throw new Error(data.message || "Failed to delete book");
+        throw new Error(data.message || "Failed to delete product");
 
-      setBooks(books.filter((book: any) => book._id !== bookId));
+      setproducts(products.filter((product: any) => product._id !== productId));
       Alert.alert("Success", "Recommendation deleted successfully");
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to delete recommendation");
     } finally {
-      setDeleteBookId(null);
+      setDeleteproductId(null);
     }
   };
 
-  const confirmDelete = (bookId: any) => {
+  const confirmDelete = (productId: any) => {
     Alert.alert(
       "Delete Recommendation",
       "Are you sure you want to delete this recommendation?",
@@ -90,31 +90,30 @@ export default function Profile() {
         {
           text: "Delete",
           style: "destructive",
-          onPress: () => handleDeleteBook(bookId),
+          onPress: () => handleDeleteProduct(productId),
         },
       ]
     );
   };
 
-  const renderBookItem = ({ item }: any) => (
-    <View style={styles.bookItem}>
-      <Image source={item.image} style={styles.bookImage} />
-      <View style={styles.bookInfo}>
-        <Text style={styles.bookTitle}>{item.title}</Text>
-        {/* <View style={styles.ratingContainer}>{renderRatingStars(item.rating)}</View> */}
-        <Text style={styles.bookCaption} numberOfLines={2}>
+  const renderProductItem = ({ item }: any) => (
+    <View style={styles.productItem}>
+      <Image source={item.image} style={styles.productImage} />
+      <View style={styles.productInfo}>
+        <Text style={styles.productTitle}>{item.title}</Text>
+        <Text style={styles.productCaption} numberOfLines={2}>
           {item.caption}
         </Text>
-        <Text style={styles.bookDate}>
+        <Text style={styles.productDate}>
           {new Date(item.createdAt).toLocaleDateString()}
         </Text>
       </View>
 
       <TouchableOpacity
         style={styles.deleteButton}
-        onPress={() => handleDeleteBook(item._id)}
+        onPress={() => handleDeleteProduct(item._id)}
       >
-        {deleteBookId === item._id ? (
+        {deleteproductId === item._id ? (
           <ActivityIndicator size="small" color={COLORS.primary} />
         ) : (
           <Ionicons name="trash-outline" size={20} color={COLORS.primary} />
@@ -137,17 +136,17 @@ export default function Profile() {
       <ProfileHeader />
       <LogoutButton />
 
-      <View style={styles.booksHeader}>
-        <Text style={styles.booksTitle}>Your Recommendations </Text>
-        <Text style={styles.booksCount}>{books.length} product</Text>
+      <View style={styles.productsHeader}>
+        <Text style={styles.productsTitle}>Your Recommendations </Text>
+        <Text style={styles.productsCount}>{products.length} product</Text>
       </View>
 
       <FlatList
-        data={books}
-        renderItem={renderBookItem}
+        data={products}
+        renderItem={renderProductItem}
         keyExtractor={(item: any) => item._id}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.booksList}
+        contentContainerStyle={styles.productsList}
         refreshControl={
           <RefreshControl
             refreshing={refreshing}

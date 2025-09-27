@@ -91,13 +91,16 @@ export default function Create() {
       const uriParts = image.split(".");
       const fileType = uriParts[uriParts.length - 1];
 
-
-      const imageType =
-        fileType?.toLowerCase() === "jpg"
-          ? "image/jpeg"
-          : fileType?.toLowerCase() === "png"
-          ? "image/png"
-          : "image/jpeg";
+      let imageType = "image/jpeg";
+      if (fileType === "png") {
+        imageType = "image/png";
+      } else if (fileType === "jpg" || fileType === "jpeg") {
+        imageType = "image/jpeg";
+      } else {
+        Alert.alert("Error", "Unsupported image type");
+        setLoading(false);
+        return;
+      }
 
       const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
 
