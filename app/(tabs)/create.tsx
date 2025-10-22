@@ -18,14 +18,13 @@ import COLORS from "../../constants/colors";
 import { useAuthStore } from "../../store/authStore";
 
 import * as ImagePicker from "expo-image-picker";
-import * as FileSystem from "expo-file-system";
 import { API_URL } from "../../constants/api";
 
 export default function Create() {
   const [title, setTitle] = useState("");
   const [caption, setCaption] = useState("");
   const [rating, setRating] = useState(3);
-  const [image, setImage] = useState(""); // to display the selected image
+  const [image, setImage] = useState<string | null>(null);
   const [imageBase64, setImageBase64] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
   const [price, setPrice] = useState("");
@@ -33,49 +32,43 @@ export default function Create() {
   const router = useRouter();
   const { token }: any = useAuthStore();
 
-  console.log(token);
+  // console.log(token);
 
   const pickImage = async () => {
     try {
-      // request permission if needed
-      if (Platform.OS !== "web") {
-        const { status } =
-          await ImagePicker.requestMediaLibraryPermissionsAsync();
-
-        if (status !== "granted") {
-          Alert.alert(
-            "Permission Denied",
-            "We need camera roll permissions to upload an image"
-          );
-          return;
-        }
+      const { status } =
+        await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (status !== "granted") {
+        Alert.alert(
+          "Permission Denied",
+          "App needs permission to access your photos."
+        );
+        return;
       }
 
-      // launch image library
       const result = await ImagePicker.launchImageLibraryAsync({
-        mediaTypes: "images",
+        mediaTypes: ["images", "videos"],
         allowsEditing: true,
         aspect: [4, 3],
-        quality: 0.5, // lower quality for smaller base64
+        quality: 1,
         base64: true,
       });
 
       if (!result.canceled) {
-        setImage(result.assets[0].uri);
+        const asset = result.assets[0];
+        const uri = asset.uri;
+        const base64 = asset.base64;
+        const mimeType = asset.mimeType;
 
-        // if base64 is provided, use it
-
-        if (result.assets[0].base64) {
-          setImageBase64(result.assets[0].base64);
-        } else {
-          // otherwise, convert to base64
-          // const base64 = await FileSystem.readAsStringAsync(result.assets[0].uri)
-          // setImageBase64(base64);
+        if (base64) {
+          const dataUrl = `data:${mimeType};base64,${base64}`;
+          setImage(uri);
+          setImageBase64(dataUrl);
         }
       }
-    } catch (error) {
-      console.error("Error picking image:", error);
-      Alert.alert("Error", "There was a problem selecting your image");
+    } catch (err) {
+      console.error("Error picking image:", err);
+      Alert.alert("Error", "Could not pick image.");
     }
   };
 
@@ -86,23 +79,12 @@ export default function Create() {
     }
 
     try {
-      setLoading(true);
-
-      const uriParts = image.split(".");
-      const fileType = uriParts[uriParts.length - 1];
-
-      let imageType = "image/jpeg";
-      if (fileType === "png") {
-        imageType = "image/png";
-      } else if (fileType === "jpg" || fileType === "jpeg") {
-        imageType = "image/jpeg";
-      } else {
-        Alert.alert("Error", "Unsupported image type");
-        setLoading(false);
+      if (!imageBase64) {
+        Alert.alert("Error", "Please select an image first.");
         return;
       }
 
-      const imageDataUrl = `data:${imageType};base64,${imageBase64}`;
+      setLoading(true);
 
       const response = await fetch(`${API_URL}/product`, {
         method: "POST",
@@ -114,19 +96,20 @@ export default function Create() {
           title,
           caption,
           price: Number(price),
-          image: imageDataUrl,
+          image: imageBase64,
           rating: 1,
         }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Something went wrong");
 
-      Alert.alert("Success", "Your book recommendation has been posted!");
+      Alert.alert("Success", "Your product recommendation has been posted!");
       setTitle("");
       setCaption("");
       setRating(3);
-      setImage("");
+      setImage(null);
       setImageBase64(null);
+      setPrice("");
       router.push("/");
     } catch (error: any) {
       console.error("Error creating post:", error);

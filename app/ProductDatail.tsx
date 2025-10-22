@@ -5,6 +5,8 @@ import {
   TouchableOpacity,
   ScrollView,
   FlatList,
+  Alert,
+  ActivityIndicator,
 } from "react-native";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
 import { ImageBackground } from "expo-image";
@@ -13,10 +15,17 @@ import { Ionicons } from "@expo/vector-icons";
 import COLORS from "@/constants/colors";
 import { LinearGradient } from "expo-linear-gradient";
 import { formatPublishDate } from "@/lib/utils";
+import { useState } from "react";
+import { API_URL } from "@/constants/api";
+import { useAuthStore } from "@/store/authStore";
 
 export default function ProductDetail() {
-  const { item } = useLocalSearchParams();
+  const { item }: any = useLocalSearchParams();
+  const [loading, setLoading] = useState(false);
+  const [quantity, setQuantity] = useState(1)
   const router = useRouter();
+  const { token }: any = useAuthStore();
+  const product = item ? JSON.parse(item as string) : null;
   const handelSumit = () => {
     router.push({
       pathname: "/modal",
@@ -26,8 +35,35 @@ export default function ProductDetail() {
     });
   };
 
+  const handleSubmit = async () => {
+    try {
+      setLoading(true);
+
+      const response = await fetch(`${API_URL}/cart`, {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          item: {
+            product,
+          },
+          quantity: 12,
+        }),
+      });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.message || "Something went wrong");
+      setLoading(false);
+      router.push("/");
+    } catch (error: any) {
+      console.error("Error creating post:", error);
+      Alert.alert("Error", error.message || "Something went wrong");
+    } finally {
+      setLoading(false);
+    }
+  };
   // Nếu truyền item là object, cần parse lại
-  const product = item ? JSON.parse(item as string) : null;
 
   if (!product) return <Text>Không tìm thấy sản phẩm</Text>;
 
@@ -87,8 +123,28 @@ export default function ProductDetail() {
             </TouchableOpacity>
           </View>
           <Text style={styles.recipeTitle}>{product.caption}</Text>
-          <TouchableOpacity onPress={handelSumit}>
+          {/* <TouchableOpacity onPress={handelSumit}>
             <Text>ok</Text>
+          </TouchableOpacity> */}
+
+          <View style={styles.section}>
+            <Text style={styles.statLabel}>Số Lượng: </Text>
+            <View style={{flexDirection:"row",alignItems:"center",gap:10}}>
+            <TouchableOpacity><Text>-</Text></TouchableOpacity>
+            <Text>{quantity}</Text>
+            <TouchableOpacity><Text>+</Text></TouchableOpacity></View>
+          </View>
+
+          <TouchableOpacity
+            style={styles.addButton}
+            onPress={handleSubmit}
+            disabled={loading}
+          >
+            {loading ? (
+              <ActivityIndicator color={COLORS.white} />
+            ) : (
+              <Text style={styles.addButtonText}>Thêm Giỏ Hàng</Text>
+            )}
           </TouchableOpacity>
         </View>
       </ScrollView>

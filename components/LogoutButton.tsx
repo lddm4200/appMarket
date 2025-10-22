@@ -22,7 +22,6 @@ export default function LogoutButton() {
     });
   };
   const confirmLogout = () => {
-
     logout();
   };
 

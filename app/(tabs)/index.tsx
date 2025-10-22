@@ -18,6 +18,7 @@ import { formatPublishDate } from "../../lib/utils";
 import COLORS from "../../constants/colors";
 import Loader from "@/components/Loader";
 import { router } from "expo-router";
+import { useQuery } from "@tanstack/react-query";
 
 export const sleep = (ms: any) =>
   new Promise((resolve) => setTimeout(resolve, ms));
@@ -36,7 +37,7 @@ export default function Home() {
       else if (pageNum === 1) setLoading(true);
 
       const response = await fetch(
-        `${API_URL}/product?page=${pageNum}&limit=2`,
+        `${API_URL}/product?page=${pageNum}&limit=3`,
         {
           headers: { Authorization: `Bearer ${token}` },
         }
@@ -59,7 +60,7 @@ export default function Home() {
               )
             );
 
-      console.log("dataproduct", data);
+      // console.log("dataproduct", data);
       setProduct(uniqueproduct);
 
       setHasMore(pageNum < data.totalPages);
@@ -148,9 +149,13 @@ export default function Home() {
             <Text style={styles.headerSubtitle}>Chúc bạn ngày mới vui vẻ</Text>
           </View>
         }
-       ListFooterComponent={
+        ListFooterComponent={
           hasMore && product.length > 0 ? (
-            <ActivityIndicator style={styles.footerLoader} size="small" color={COLORS.primary} />
+            <ActivityIndicator
+              style={styles.footerLoader}
+              size="small"
+              color={COLORS.primary}
+            />
           ) : null
         }
         ListEmptyComponent={

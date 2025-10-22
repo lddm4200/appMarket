@@ -1,4 +1,4 @@
-import { View, Text } from "react-native";
+import { DynamicColorIOS } from "react-native";
 import React from "react";
 import {
   NativeTabs,
@@ -14,12 +14,7 @@ import { useAuthStore } from "@/store/authStore";
 
 export default function TabLayout() {
   const insets = useSafeAreaInsets();
-  const { checkAuth, user, token }: any = useAuthStore();
-  const segments = useSegments();
-  const router = useRouter();
-  const inAuthScreen = segments[0] === "(auth)";
-  const isSignedIn = user && token;
-  if (!isSignedIn && !inAuthScreen) return router.replace("/(auth)");
+
   return (
     <Tabs
       screenOptions={{
@@ -77,5 +72,29 @@ export default function TabLayout() {
         }}
       />
     </Tabs>
+
+    // <NativeTabs
+    //   tintColor={COLORS.primary}
+    //   backgroundColor={COLORS.cardBackground}
+    //   iconColor={COLORS.black}
+    //   badgeTextColor={COLORS.textPrimary}
+    //   >
+    //   <NativeTabs.Trigger name="index" >
+    //     <Icon sf="house.fill" drawable="ic_menu_mylocation" />
+    //     <Label>Home</Label>
+    //   </NativeTabs.Trigger>
+    //   <NativeTabs.Trigger name="create">
+    //     <Icon sf="bell" drawable="ic_input_add" />
+    //     <Label>Create</Label>
+    //   </NativeTabs.Trigger>
+    //   <NativeTabs.Trigger name="cart">
+    //     <Icon sf="wand.and.rays" drawable="ic_menu_mylocation" />
+    //     <Label>Cart</Label>
+    //   </NativeTabs.Trigger>
+    //   <NativeTabs.Trigger name="profile">
+    //     <Icon sf="wand.and.rays" drawable="ic_menu_mylocation" />
+    //     <Label>Profile</Label>
+    //   </NativeTabs.Trigger>
+    // </NativeTabs>
   );
 }

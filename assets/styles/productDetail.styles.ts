@@ -348,5 +348,28 @@ const styles = StyleSheet.create({
     paddingTop: 20,
     fontSize: 20,
   },
+  addButton: {
+    backgroundColor: COLORS.primary,
+    borderRadius: 12,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
+    shadowColor: COLORS.black,
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 2,
+    
+  },
+  addButtonText: {
+    color: COLORS.white,
+    fontWeight: "600",
+    fontSize: 16,
+    textAlign: "center"
+  },
+  section: {
+    flexDirection: "row",
+    alignItems: "center",
+    marginBottom: 16,
+  }
 });
 export default styles;

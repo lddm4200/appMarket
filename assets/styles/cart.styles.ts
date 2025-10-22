@@ -1,4 +1,3 @@
-
 import { StyleSheet } from "react-native";
 import COLORS from "../../constants/colors";
 
@@ -33,7 +32,7 @@ const styles = StyleSheet.create({
     color: COLORS.textSecondary,
     textAlign: "center",
   },
-  bookCard: {
+  productCard: {
     flexDirection: "row",
     backgroundColor: COLORS.cardBackground,
     borderRadius: 16,
@@ -46,8 +45,10 @@ const styles = StyleSheet.create({
     elevation: 3,
     borderWidth: 1,
     borderColor: COLORS.border,
+    justifyContent: "space-between",
+    flex: 1,
   },
-  bookHeader: {
+  productHeader: {
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
     fontWeight: "600",
     color: COLORS.textPrimary,
   },
-  bookImageContainer: {
+  productImageContainer: {
     width: "100%",
     height: 200,
     borderRadius: 12,
@@ -76,14 +77,15 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     backgroundColor: COLORS.border,
   },
-  bookImage: {
+  productImage: {
     width: 70,
     height: 100,
     borderRadius: 8,
     marginRight: 12,
   },
-  bookDetails: {
+  productDetails: {
     padding: 4,
+    justifyContent:"flex-start"
   },
   textSumbit: {
     fontSize: 16,
@@ -125,7 +127,7 @@ const styles = StyleSheet.create({
   footerLoader: {
     marginVertical: 20,
   },
-    button: {
+  button: {
     backgroundColor: COLORS.primary,
     borderRadius: 12,
     height: 50,
@@ -138,6 +140,16 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 4,
     elevation: 2,
+  },
+  productTitle: {
+    fontSize: 16,
+    fontWeight: "600",
+    color: COLORS.textPrimary,
+    marginBottom: 4,
+  },
+  deleteButton: {
+    padding: 8,
+    justifyContent: "center",
   },
 });
 

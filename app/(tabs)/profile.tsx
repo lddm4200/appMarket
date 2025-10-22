@@ -28,6 +28,7 @@ export default function Profile() {
   
 
   const { token }: any = useAuthStore();
+  
 
   const router = useRouter();
 
@@ -41,7 +42,6 @@ export default function Profile() {
 
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Failed to fetch user ");
-      console.log(data);
       
       setproducts(data);
     } catch (error) {
