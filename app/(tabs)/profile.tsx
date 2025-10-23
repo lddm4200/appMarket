@@ -25,10 +25,8 @@ export default function Profile() {
   const [isLoading, setIsLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [deleteproductId, setDeleteproductId] = useState(null);
-  
 
   const { token }: any = useAuthStore();
-  
 
   const router = useRouter();
 
@@ -41,8 +39,9 @@ export default function Profile() {
       });
 
       const data = await response.json();
-      if (!response.ok) throw new Error(data.message || "Failed to fetch user ");
-      
+      if (!response.ok)
+        throw new Error(data.message || "Failed to fetch user ");
+
       setproducts(data);
     } catch (error) {
       console.error("Error fetching data:", error);
@@ -73,11 +72,12 @@ export default function Profile() {
         throw new Error(data.message || "Failed to delete product");
 
       setproducts(products.filter((product: any) => product._id !== productId));
-      Alert.alert("Success", "Recommendation deleted successfully");
     } catch (error: any) {
       Alert.alert("Error", error.message || "Failed to delete recommendation");
     } finally {
       setDeleteproductId(null);
+      await sleep(500);
+      await fetchData();
     }
   };
 
@@ -167,7 +167,9 @@ export default function Profile() {
               style={styles.addButton}
               onPress={() => router.push("/create")}
             >
-              <Text style={styles.addButtonText}>Thêm sản phẩm đầu tiên của bạn</Text>
+              <Text style={styles.addButtonText}>
+                Thêm sản phẩm đầu tiên của bạn
+              </Text>
             </TouchableOpacity>
           </View>
         }

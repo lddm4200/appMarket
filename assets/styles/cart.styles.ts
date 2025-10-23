@@ -151,6 +151,9 @@ const styles = StyleSheet.create({
     padding: 8,
     justifyContent: "center",
   },
+  productInfo: {
+    flexDirection: "row",
+  }
 });
 
 export default styles;

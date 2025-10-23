@@ -9,7 +9,6 @@ import {
   ActivityIndicator,
 } from "react-native";
 import { Link, useLocalSearchParams, useRouter } from "expo-router";
-import { ImageBackground } from "expo-image";
 import styles from "@/assets/styles/productDetail.styles";
 import { Ionicons } from "@expo/vector-icons";
 import COLORS from "@/constants/colors";
@@ -22,7 +21,7 @@ import { useAuthStore } from "@/store/authStore";
 export default function ProductDetail() {
   const { item }: any = useLocalSearchParams();
   const [loading, setLoading] = useState(false);
-  const [quantity, setQuantity] = useState(1)
+  const [quantity, setQuantity] = useState(1);
   const router = useRouter();
   const { token }: any = useAuthStore();
   const product = item ? JSON.parse(item as string) : null;
@@ -49,13 +48,13 @@ export default function ProductDetail() {
           item: {
             product,
           },
-          quantity: 12,
+          quantity: 1,
         }),
       });
       const data = await response.json();
       if (!response.ok) throw new Error(data.message || "Something went wrong");
       setLoading(false);
-      router.push("/");
+      Alert.alert("Success", "Product added to cart successfully");
     } catch (error: any) {
       console.error("Error creating post:", error);
       Alert.alert("Error", error.message || "Something went wrong");
@@ -63,8 +62,6 @@ export default function ProductDetail() {
       setLoading(false);
     }
   };
-  // Nếu truyền item là object, cần parse lại
-
   if (!product) return <Text>Không tìm thấy sản phẩm</Text>;
 
   return (
@@ -123,17 +120,6 @@ export default function ProductDetail() {
             </TouchableOpacity>
           </View>
           <Text style={styles.recipeTitle}>{product.caption}</Text>
-          {/* <TouchableOpacity onPress={handelSumit}>
-            <Text>ok</Text>
-          </TouchableOpacity> */}
-
-          <View style={styles.section}>
-            <Text style={styles.statLabel}>Số Lượng: </Text>
-            <View style={{flexDirection:"row",alignItems:"center",gap:10}}>
-            <TouchableOpacity><Text>-</Text></TouchableOpacity>
-            <Text>{quantity}</Text>
-            <TouchableOpacity><Text>+</Text></TouchableOpacity></View>
-          </View>
 
           <TouchableOpacity
             style={styles.addButton}
